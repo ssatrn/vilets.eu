@@ -3,34 +3,719 @@
 <head>
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
-  <title>vilets</title>
-  <link href="https://fonts.googleapis.com/css?family=Nunito:400,700,800&amp;display=swap" rel="stylesheet" type="text/css">
-  <link rel="stylesheet" href="style.css">
+  <title>snarv / home</title>
+  <meta name="description" content="snarv's personal site: notes and contact.">
+  <meta name="theme-color" content="#0a0e13">
+  <meta property="og:title" content="snarv">
+  <meta property="og:description" content="snarv's personal site: notes and contact.">
+  <meta property="og:type" content="website">
+  <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'%3E%3Crect width='32' height='32' rx='6' fill='%230a0e13'/%3E%3Ctext x='16' y='23' font-size='20' font-family='monospace' font-weight='700' text-anchor='middle' fill='%238fd0ec'%3Es%3C/text%3E%3C/svg%3E">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;700&display=swap" rel="stylesheet">
+  <style>
+    :root {
+      color-scheme: dark;
+      --bg: #0a0e13;
+      --panel: #0d1218;
+      --line: #1a232c;
+      --ink: #b8c4ce;
+      --bright: #e3ecf2;
+      --dim: #7a8b98;
+      --ice: #8fd0ec;
+      --ice-soft: rgba(143, 208, 236, 0.07);
+      --bar: 34px;
+    }
+
+    @media (prefers-color-scheme: light) {
+      :root:not([data-theme]) {
+        color-scheme: light;
+        --bg: #eef3f6;
+        --panel: #e4ebf0;
+        --line: #cfd9e0;
+        --ink: #2b3a46;
+        --bright: #0c1a24;
+        --dim: #566774;
+        --ice: #0b6a92;
+        --ice-soft: rgba(11, 106, 146, 0.07);
+      }
+    }
+
+    :root[data-theme="light"] {
+      color-scheme: light;
+      --bg: #eef3f6;
+      --panel: #e4ebf0;
+      --line: #cfd9e0;
+      --ink: #2b3a46;
+      --bright: #0c1a24;
+      --dim: #566774;
+      --ice: #0b6a92;
+      --ice-soft: rgba(11, 106, 146, 0.07);
+    }
+
+    * { box-sizing: border-box; }
+
+    [hidden] { display: none !important; }
+
+    html { scrollbar-color: var(--line) var(--bg); }
+
+    body {
+      margin: 0;
+      background: var(--bg);
+      color: var(--ink);
+      font-family: "JetBrains Mono", ui-monospace, "SFMono-Regular", Menlo, Consolas, monospace;
+      font-size: 14px;
+      line-height: 1.75;
+      padding-bottom: var(--bar);
+      -webkit-font-smoothing: antialiased;
+      text-rendering: optimizeLegibility;
+    }
+
+    /* ---------- layout ---------- */
+
+    .shell {
+      display: grid;
+      grid-template-columns: 240px 1fr;
+      min-height: calc(100vh - var(--bar));
+    }
+
+    aside {
+      position: sticky;
+      top: 0;
+      height: calc(100vh - var(--bar));
+      padding: 2.25rem 1.5rem 1.5rem;
+      background: var(--panel);
+      border-right: 1px solid var(--line);
+      display: flex;
+      flex-direction: column;
+    }
+
+    .brand {
+      font-size: 1.2rem;
+      font-weight: 700;
+      color: var(--bright);
+      letter-spacing: -0.02em;
+    }
+
+    .brand-sub { color: var(--dim); font-size: 12px; }
+
+    nav { margin-top: 2.5rem; }
+    nav ul { list-style: none; margin: 0; padding: 0; }
+
+    nav a {
+      display: block;
+      padding: 0.4rem 0.9rem;
+      margin-left: -0.9rem;
+      color: var(--ink);
+      text-decoration: none;
+      border-left: 2px solid transparent;
+      transition: color 0.15s, background 0.15s, border-color 0.15s;
+    }
+
+    nav a:hover { color: var(--ice); background: var(--ice-soft); }
+
+    nav a[aria-current="page"] {
+      color: var(--ice);
+      border-left-color: var(--ice);
+      background: var(--ice-soft);
+    }
+
+    .aside-foot {
+      margin-top: auto;
+      color: var(--dim);
+      font-size: 12px;
+      display: flex;
+      flex-direction: column;
+      gap: 0.4rem;
+      align-items: flex-start;
+    }
+
+    button {
+      font: inherit;
+      color: inherit;
+      background: none;
+      border: 0;
+      padding: 0;
+      cursor: pointer;
+    }
+
+    .aside-foot button { color: var(--dim); }
+    .aside-foot button:hover { color: var(--ice); }
+
+    .stage { position: relative; overflow: hidden; }
+
+    /* faint contour rings in the top right corner */
+    .contour {
+      position: absolute;
+      top: 0;
+      right: 0;
+      width: 560px;
+      height: 560px;
+      pointer-events: none;
+      background: repeating-radial-gradient(circle at 100% 0, transparent 0 22px, var(--line) 22px 23px);
+      -webkit-mask-image: radial-gradient(circle at 100% 0, #000 0%, transparent 72%);
+      mask-image: radial-gradient(circle at 100% 0, #000 0%, transparent 72%);
+    }
+
+    main {
+      position: relative;
+      z-index: 1;
+      padding: 4.5rem 3.5rem 5rem;
+      max-width: 760px;
+    }
+
+    /* ---------- sections ---------- */
+
+    section:not([hidden]), article:not([hidden]) { animation: in 0.22s ease-out; }
+
+    @keyframes in {
+      from { opacity: 0; transform: translateY(5px); }
+      to   { opacity: 1; transform: none; }
+    }
+
+    h1 {
+      margin: 0 0 1.25rem;
+      font-size: 2.4rem;
+      line-height: 1.12;
+      letter-spacing: -0.045em;
+      color: var(--bright);
+      outline: none;
+    }
+
+    .lede { max-width: 50ch; margin: 0 0 1rem; font-size: 15px; }
+
+    .label {
+      margin: 3rem 0 0.75rem;
+      color: var(--ice);
+      font-size: 12px;
+      letter-spacing: 0.04em;
+    }
+
+    .actions { display: flex; flex-wrap: wrap; gap: 0.75rem; margin-top: 1.5rem; }
+
+    /* rows */
+    .rows { margin: 0; border-bottom: 1px solid var(--line); }
+
+    .row {
+      display: grid;
+      grid-template-columns: 9rem 1fr;
+      gap: 1.25rem;
+      padding: 0.85rem 0.5rem;
+      margin: 0 -0.5rem;
+      border-top: 1px solid var(--line);
+      transition: background 0.15s;
+    }
+
+    .row[data-route] { cursor: pointer; }
+    .row:hover { background: var(--ice-soft); }
+    .row dt { margin: 0; color: var(--dim); }
+    .row dd { margin: 0; }
+
+    a { color: var(--ice); text-decoration: none; }
+    a:hover { text-decoration: underline; text-underline-offset: 3px; }
+
+    .ext::after { content: " \2197"; color: var(--dim); }
+
+    .tag {
+      display: inline-block;
+      margin-left: 0.5rem;
+      padding: 0 0.4rem;
+      border: 1px solid var(--line);
+      color: var(--dim);
+      font-size: 11px;
+      white-space: nowrap;
+    }
+
+    /* timeline */
+    .log {
+      list-style: none;
+      margin: 0;
+      padding: 0 0 0 1.25rem;
+      border-left: 1px solid var(--line);
+    }
+
+    .log li { position: relative; padding: 0 0 1.15rem; }
+
+    .log li::before {
+      content: "";
+      position: absolute;
+      left: calc(-1.25rem - 4px);
+      top: 0.55rem;
+      width: 7px;
+      height: 7px;
+      border-radius: 50%;
+      background: var(--bg);
+      border: 1px solid var(--ice);
+    }
+
+    .log time { display: block; color: var(--dim); font-size: 12px; }
+
+    /* single note */
+    .back { color: var(--dim); font-size: 12px; margin-bottom: 1.5rem; display: inline-block; }
+    .back:hover { color: var(--ice); }
+
+    .note-meta { margin: -0.5rem 0 2rem; color: var(--dim); font-size: 12px; }
+    .note-body { max-width: 56ch; }
+    .note-body p { margin: 0 0 1.1rem; font-size: 15px; }
+
+    .note-nav {
+      display: flex;
+      justify-content: space-between;
+      gap: 1rem;
+      margin-top: 3rem;
+      padding-top: 1.25rem;
+      border-top: 1px solid var(--line);
+      font-size: 13px;
+    }
+
+    .note-nav button { color: var(--dim); }
+    .note-nav button:hover { color: var(--ice); }
+
+    /* buttons */
+    .btn, .btn-line {
+      display: inline-block;
+      padding: 0.5rem 1.1rem;
+      transition: background 0.15s, color 0.15s, border-color 0.15s;
+    }
+
+    .btn { color: var(--ice); border: 1px solid var(--ice); }
+    .btn:hover { background: var(--ice); color: var(--bg); text-decoration: none; }
+
+    .btn-line { color: var(--ink); border: 1px solid var(--line); }
+    .btn-line:hover { color: var(--ice); border-color: var(--ice); text-decoration: none; }
+
+    /* contact form */
+    .form { display: grid; gap: 1rem; max-width: 520px; }
+    .form label { display: block; color: var(--dim); font-size: 12px; }
+
+    .form input, .form textarea {
+      display: block;
+      width: 100%;
+      margin-top: 0.35rem;
+      padding: 0.6rem 0.75rem;
+      font: inherit;
+      font-size: 14px;
+      color: var(--ink);
+      background: var(--panel);
+      border: 1px solid var(--line);
+      border-radius: 0;
+      transition: border-color 0.15s;
+    }
+
+    .form textarea { resize: vertical; min-height: 7rem; }
+    .form input:focus, .form textarea:focus { outline: none; border-color: var(--ice); }
+    .form .btn { justify-self: start; }
+
+    .notice { margin: 0; min-height: 1.75em; color: var(--ice); font-size: 13px; }
+
+    .copy { margin-left: 0.75rem; color: var(--dim); font-size: 12px; }
+    .copy:hover { color: var(--ice); }
+
+    /* staggered entrance */
+    section:not([hidden]) .row,
+    section:not([hidden]) .log li { animation: in 0.3s ease-out both; }
+
+    section:not([hidden]) .row:nth-child(2), section:not([hidden]) .log li:nth-child(2) { animation-delay: 0.05s; }
+    section:not([hidden]) .row:nth-child(3), section:not([hidden]) .log li:nth-child(3) { animation-delay: 0.1s; }
+
+    /* ---------- status bar ---------- */
+
+    .status {
+      position: fixed;
+      left: 0; right: 0; bottom: 0;
+      height: var(--bar);
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 1rem;
+      padding: 0 1.25rem;
+      background: var(--panel);
+      border-top: 1px solid var(--line);
+      color: var(--dim);
+      font-size: 12px;
+    }
+
+    .status #where { color: var(--ice); }
+
+    ::selection { background: var(--ice); color: var(--bg); }
+    :focus-visible { outline: 1px solid var(--ice); outline-offset: 3px; }
+
+    /* ---------- small screens ---------- */
+
+    @media (max-width: 760px) {
+      .shell { grid-template-columns: 1fr; }
+
+      aside {
+        position: static;
+        height: auto;
+        padding: 1.5rem 1.25rem 0;
+        border-right: none;
+        border-bottom: 1px solid var(--line);
+      }
+
+      nav { margin-top: 1.25rem; }
+      nav ul { display: flex; flex-wrap: wrap; gap: 0.25rem 1.25rem; }
+
+      nav a {
+        margin: 0;
+        padding: 0.5rem 0;
+        border-left: none;
+        border-bottom: 2px solid transparent;
+      }
+
+      nav a:hover, nav a[aria-current="page"] { background: none; }
+      nav a[aria-current="page"] { border-bottom-color: var(--ice); }
+
+      .aside-foot { margin: 0; padding: 0.75rem 0 1rem; flex-direction: row; gap: 1rem; }
+
+      main { padding: 2.5rem 1.25rem 4rem; }
+      h1 { font-size: 1.9rem; }
+      .contour { width: 320px; height: 320px; }
+
+      .row { grid-template-columns: 1fr; gap: 0.1rem; margin: 0; padding: 0.85rem 0; }
+      .row:hover { background: none; }
+    }
+
+    @media (prefers-reduced-motion: reduce) {
+      *, *::before, *::after { animation: none !important; transition: none !important; }
+    }
+
+    @media print {
+      aside, .status, .contour, .form, .actions, .back, .note-nav { display: none !important; }
+      .shell { display: block; }
+      body { background: #fff; color: #000; padding: 0; }
+      h1, .brand { color: #000; }
+    }
+  </style>
 </head>
 <body>
-  <div class="main">
-    <div>
-      <nav class="nav">
-        <a href="/">home</a>
-        <a href="/blog">blog</a>
-        <a href="/contact">contact</a>
+  <div class="shell">
+    <aside>
+      <div>
+        <div class="brand">snarv</div>
+        <div class="brand-sub">personal site</div>
+      </div>
+
+      <nav aria-label="main">
+        <ul>
+          <li><a href="#home" data-route="home">home</a></li>
+          <li><a href="#notes" data-route="notes">notes</a></li>
+          <li><a href="#contact" data-route="contact">contact</a></li>
+        </ul>
       </nav>
 
-      <h1>Hi, I'm Your Name</h1>
-      <p>A short sentence about who you are and what you do.</p>
+      <div class="aside-foot">
+        <button type="button" id="theme" aria-label="toggle color theme">theme: dark</button>
+        <span>&copy; 2026 snarv</span>
+      </div>
+    </aside>
 
-      <h2>Projects</h2>
-      <p>A line introducing your projects.</p>
-      <ul>
-        <li><a href="#">Project one</a>: short description</li>
-        <li><a href="#">Project two</a>: short description</li>
-        <li><a href="#">Project three</a>: short description</li>
-      </ul>
+    <div class="stage">
+      <div class="contour" aria-hidden="true"></div>
+
+      <main id="content">
+        <!-- HOME -->
+        <section data-page="home">
+          <h1>hey, i'm snarv.</h1>
+          <p class="lede">write two or three plain sentences here about what you do and what you're into. no need to dress it up.</p>
+
+          <div class="actions">
+            <a class="btn" href="#notes" data-route="notes">read my notes</a>
+            <a class="btn-line" href="#contact" data-route="contact">get in touch</a>
+          </div>
+
+          <div class="label">right now</div>
+          <dl class="rows">
+            <div class="row"><dt>working on</dt><dd>the thing you're building right now</dd></div>
+            <div class="row"><dt>learning</dt><dd>something you're picking up</dd></div>
+            <div class="row"><dt>listening to</dt><dd>whatever's on repeat</dd></div>
+          </dl>
+
+          <div class="label">lately</div>
+          <ul class="log">
+            <li><time>october 13, 2026</time>shipped the first version of this site.</li>
+            <li><time>september 28, 2026</time>started something new, more soon.</li>
+            <li><time>september 2, 2026</time>wrote up something worth keeping.</li>
+          </ul>
+        </section>
+
+        <!-- NOTES -->
+        <section data-page="notes">
+          <div id="note-index">
+            <h1>notes</h1>
+            <p class="lede">short writeups and things i want to remember.</p>
+
+            <div class="label">2026</div>
+            <dl class="rows">
+              <div class="row" data-route="notes/plain-websites"><dt>oct 13</dt><dd><a href="#notes/plain-websites" data-route="notes/plain-websites">why i like plain websites</a><span class="tag">3 min</span></dd></div>
+              <div class="row" data-route="notes/tidy-folder"><dt>sep 28</dt><dd><a href="#notes/tidy-folder" data-route="notes/tidy-folder">keeping a tidy folder</a><span class="tag">2 min</span></dd></div>
+              <div class="row" data-route="notes/small-tools"><dt>sep 2</dt><dd><a href="#notes/small-tools" data-route="notes/small-tools">small tools i keep using</a><span class="tag">3 min</span></dd></div>
+            </dl>
+
+            <div class="label">2025</div>
+            <dl class="rows">
+              <div class="row" data-route="notes/winter-mornings"><dt>dec 19</dt><dd><a href="#notes/winter-mornings" data-route="notes/winter-mornings">winter mornings</a><span class="tag">2 min</span></dd></div>
+              <div class="row" data-route="notes/learning-quietly"><dt>jun 4</dt><dd><a href="#notes/learning-quietly" data-route="notes/learning-quietly">learning quietly</a><span class="tag">3 min</span></dd></div>
+            </dl>
+          </div>
+
+          <article data-note="plain-websites" hidden>
+            <h1>why i like plain websites</h1>
+            <div class="note-meta">oct 13, 2026 &middot; 3 min read</div>
+            <div class="note-body">
+              <p>i keep coming back to plain websites. a page that loads instantly, reads well on any screen and does one thing is rare now, and i notice it every time i find one.</p>
+              <p>most of what makes a site feel heavy is stuff nobody asked for: popups, trackers, scripts that fight each other. take those away and what's left is words and a few links, which is usually all i wanted.</p>
+              <p>so this site is deliberately small. one file, one font, a couple of colors. if i want to change something i can open it and see the whole thing at once.</p>
+            </div>
+          </article>
+
+          <article data-note="tidy-folder" hidden>
+            <h1>keeping a tidy folder</h1>
+            <div class="note-meta">sep 28, 2026 &middot; 2 min read</div>
+            <div class="note-body">
+              <p>i used to spend more time looking for files than using them. the fix was boring: fewer folders, clearer names, and a five minute sweep once a week.</p>
+              <p>i name things with the date first, then a short description. sorting does the rest. anything i haven't touched in a year goes into an archive folder instead of getting deleted, so nothing feels risky.</p>
+              <p>it isn't exciting, but it takes a small, constant annoyance out of the week.</p>
+            </div>
+          </article>
+
+          <article data-note="small-tools" hidden>
+            <h1>small tools i keep using</h1>
+            <div class="note-meta">sep 2, 2026 &middot; 3 min read</div>
+            <div class="note-body">
+              <p>a short list, mostly for future me. a plain text editor that opens instantly. a notes file i never organize. a timer for focused work. and a paper notebook for anything i need to think through slowly.</p>
+              <p>none of these are clever. what they share is that they stay out of the way, and i've never had to learn a new feature just to keep using them.</p>
+              <p>i try new tools all the time, but only the ones that survive a few months get a spot here.</p>
+            </div>
+          </article>
+
+          <article data-note="winter-mornings" hidden>
+            <h1>winter mornings</h1>
+            <div class="note-meta">dec 19, 2025 &middot; 2 min read</div>
+            <div class="note-body">
+              <p>the best part of winter is the first hour of the day. it's dark, it's quiet, and the air is sharp enough to wake you up before the coffee does.</p>
+              <p>i started taking a short walk before opening my laptop. twenty minutes, same route, no phone. it changed how the rest of the day goes more than any productivity trick i've tried.</p>
+              <p>cold weather makes everything feel a bit more deliberate, and i like that.</p>
+            </div>
+          </article>
+
+          <article data-note="learning-quietly" hidden>
+            <h1>learning quietly</h1>
+            <div class="note-meta">jun 4, 2025 &middot; 3 min read</div>
+            <div class="note-body">
+              <p>for a long time i thought i had to announce what i was learning for it to count. it turns out most of the useful learning happens before anyone is watching.</p>
+              <p>now i keep a private log of what i tried, what broke, and what finally worked. when something is worth sharing, it's already half written.</p>
+              <p>the log is also kind to me on bad weeks. i can scroll back and see that things moved, even when it didn't feel like it.</p>
+            </div>
+          </article>
+        </section>
+
+        <!-- CONTACT -->
+        <section data-page="contact">
+          <h1>contact</h1>
+          <p class="lede">email is the best way to reach me. i'll get back when i can.</p>
+
+          <div class="label">find me</div>
+          <dl class="rows">
+            <div class="row">
+              <dt>email</dt>
+              <dd><a href="mailto:you@example.com" id="email">you@example.com</a><button type="button" class="copy" id="copy">copy</button></dd>
+            </div>
+            <div class="row"><dt>github</dt><dd><a class="ext" href="https://github.com/" target="_blank" rel="noopener">github.com/your-username</a></dd></div>
+            <div class="row"><dt>elsewhere</dt><dd><a class="ext" href="https://example.com/" target="_blank" rel="noopener">your other link</a></dd></div>
+            <div class="row"><dt>replies</dt><dd>usually within a day or two</dd></div>
+          </dl>
+
+          <div class="label">or write here</div>
+          <form class="form" id="form">
+            <label>name
+              <input type="text" name="name" autocomplete="name">
+            </label>
+            <label>message
+              <textarea name="message" required></textarea>
+            </label>
+            <button type="submit" class="btn">send via email</button>
+            <p class="notice" id="notice" role="status" aria-live="polite"></p>
+          </form>
+        </section>
+      </main>
     </div>
-
-    <footer>
-      <p>&copy; 2026 Your Name</p>
-    </footer>
   </div>
+
+  <div class="status">
+    <span id="where">/home/snarv</span>
+    <span id="clock"></span>
+  </div>
+
+  <script>
+    (function () {
+      var root = document.documentElement;
+      var sections = Array.prototype.slice.call(document.querySelectorAll("section[data-page]"));
+      var navLinks = Array.prototype.slice.call(document.querySelectorAll("nav a"));
+      var noteEls = Array.prototype.slice.call(document.querySelectorAll("article[data-note]"));
+      var noteIndex = document.getElementById("note-index");
+      var whereEl = document.getElementById("where");
+      var names = sections.map(function (s) { return s.dataset.page; });
+
+      // ---- notes: add a back link on top and a next link at the bottom ----
+      noteEls.forEach(function (art, i) {
+        var back = document.createElement("a");
+        back.className = "back";
+        back.href = "#notes";
+        back.setAttribute("data-route", "notes");
+        back.textContent = "\u2190 all notes";
+        art.insertBefore(back, art.firstChild);
+
+        var nav = document.createElement("div");
+        nav.className = "note-nav";
+
+        var left = document.createElement("a");
+        left.href = "#notes";
+        left.setAttribute("data-route", "notes");
+        left.textContent = "\u2190 all notes";
+        nav.appendChild(left);
+
+        var next = noteEls[i + 1];
+        if (next) {
+          var right = document.createElement("a");
+          right.href = "#notes/" + next.dataset.note;
+          right.setAttribute("data-route", "notes/" + next.dataset.note);
+          right.textContent = "next: " + next.querySelector("h1").textContent + " \u2192";
+          nav.appendChild(right);
+        }
+        art.appendChild(nav);
+      });
+
+      // ---- routing: works from clicks, so it also works in preview panes ----
+      function fromHash() { return location.hash.slice(1); }
+
+      function render(route, moveFocus) {
+        var parts = (route || "").split("/");
+        var page = names.indexOf(parts[0]) === -1 ? "home" : parts[0];
+        var note = null;
+
+        if (page === "notes" && parts[1]) {
+          noteEls.forEach(function (a) { if (a.dataset.note === parts[1]) note = a; });
+        }
+
+        sections.forEach(function (s) { s.hidden = s.dataset.page !== page; });
+        noteIndex.hidden = !!note;
+        noteEls.forEach(function (a) { a.hidden = a !== note; });
+
+        navLinks.forEach(function (a) {
+          if (a.getAttribute("data-route") === page) a.setAttribute("aria-current", "page");
+          else a.removeAttribute("aria-current");
+        });
+
+        var path = "/home/snarv";
+        if (page !== "home") path += "/" + page;
+        if (note) path += "/" + note.dataset.note;
+        whereEl.textContent = path;
+
+        var heading = note
+          ? note.querySelector("h1")
+          : document.querySelector('section[data-page="' + page + '"] h1');
+        document.title = "snarv / " + (note ? heading.textContent : page);
+
+        window.scrollTo(0, 0);
+        if (moveFocus && heading) {
+          heading.setAttribute("tabindex", "-1");
+          heading.focus({ preventScroll: true });
+        }
+      }
+
+      function go(route) {
+        try { history.pushState(null, "", "#" + route); } catch (e) {}
+        render(route, true);
+      }
+
+      document.addEventListener("click", function (e) {
+        if (e.defaultPrevented || e.button !== 0 || e.metaKey || e.ctrlKey || e.shiftKey || e.altKey) return;
+        var el = e.target.closest ? e.target.closest("[data-route]") : null;
+        if (!el) return;
+        e.preventDefault();
+        go(el.getAttribute("data-route"));
+      });
+
+      window.addEventListener("popstate", function () { render(fromHash(), false); });
+      window.addEventListener("hashchange", function () { render(fromHash(), false); });
+      render(fromHash(), false);
+
+      // ---- theme ----
+      var themeBtn = document.getElementById("theme");
+      var metaTheme = document.querySelector('meta[name="theme-color"]');
+
+      function currentTheme() {
+        if (root.dataset.theme) return root.dataset.theme;
+        return window.matchMedia && matchMedia("(prefers-color-scheme: light)").matches ? "light" : "dark";
+      }
+
+      function paintTheme() {
+        var t = currentTheme();
+        themeBtn.textContent = "theme: " + t;
+        metaTheme.setAttribute("content", t === "light" ? "#eef3f6" : "#0a0e13");
+      }
+
+      function setTheme(t) {
+        root.dataset.theme = t;
+        try { localStorage.setItem("theme", t); } catch (e) {}
+        paintTheme();
+      }
+
+      try {
+        var saved = localStorage.getItem("theme");
+        if (saved === "light" || saved === "dark") root.dataset.theme = saved;
+      } catch (e) {}
+      paintTheme();
+
+      themeBtn.addEventListener("click", function () {
+        setTheme(currentTheme() === "light" ? "dark" : "light");
+      });
+
+      // ---- copy email ----
+      var emailText = document.getElementById("email").textContent;
+      var copyBtn = document.getElementById("copy");
+      copyBtn.addEventListener("click", function () {
+        function done(ok) {
+          copyBtn.textContent = ok ? "copied" : "press ctrl+c";
+          setTimeout(function () { copyBtn.textContent = "copy"; }, 1500);
+        }
+        try {
+          navigator.clipboard.writeText(emailText).then(function () { done(true); }, function () { done(false); });
+        } catch (e) { done(false); }
+      });
+
+      // ---- contact form: opens the visitor's mail app ----
+      var notice = document.getElementById("notice");
+      document.getElementById("form").addEventListener("submit", function (e) {
+        e.preventDefault();
+        var name = this.elements.name.value.trim();
+        var msg = this.elements.message.value.trim();
+        if (!msg) { notice.textContent = "write a message first."; return; }
+
+        var body = msg + (name ? "\n\n- " + name : "");
+        var fallback = "if nothing opens, send it to " + emailText + " directly.";
+        notice.textContent = "opening your mail app. " + fallback;
+
+        try {
+          navigator.clipboard.writeText(body).then(function () {
+            notice.textContent = "opening your mail app. your message is also copied. " + fallback;
+          }, function () {});
+        } catch (err) {}
+
+        location.href = "mailto:" + emailText +
+          "?subject=" + encodeURIComponent("hello from your site") +
+          "&body=" + encodeURIComponent(body);
+      });
+
+      // ---- clock ----
+      var clock = document.getElementById("clock");
+      function tick() {
+        clock.textContent = new Date().toLocaleTimeString([], { hour: "2-digit", minute: "2-digit", hour12: false });
+      }
+      tick();
+      setInterval(tick, 20000);
+    })();
+  </script>
 </body>
 </html>
