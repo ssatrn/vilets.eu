@@ -3,11 +3,11 @@
 <head>
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
-  <title>snarv / home</title>
-  <meta name="description" content="snarv's personal site: notes and contact.">
+  <title>vil / home</title>
+  <meta name="description" content="vilets">
   <meta name="theme-color" content="#0a0e13">
-  <meta property="og:title" content="snarv">
-  <meta property="og:description" content="snarv's personal site: notes and contact.">
+  <meta property="og:title" content="vilets">
+  <meta property="og:description" content="vilets">
   <meta property="og:type" content="website">
   <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'%3E%3Crect width='32' height='32' rx='6' fill='%230a0e13'/%3E%3Ctext x='16' y='23' font-size='20' font-family='monospace' font-weight='700' text-anchor='middle' fill='%238fd0ec'%3Es%3C/text%3E%3C/svg%3E">
   <link rel="preconnect" href="https://fonts.googleapis.com">
@@ -392,8 +392,8 @@
   <div class="shell">
     <aside>
       <div>
-        <div class="brand">snarv</div>
-        <div class="brand-sub">personal site</div>
+        <div class="brand">vil</div>
+        <div class="brand-sub">bombo rasclat</div>
       </div>
 
       <nav aria-label="main">
@@ -406,7 +406,7 @@
 
       <div class="aside-foot">
         <button type="button" id="theme" aria-label="toggle color theme">theme: dark</button>
-        <span>&copy; 2026 snarv</span>
+        <span>&copy; 2026 vil</span>
       </div>
     </aside>
 
@@ -416,12 +416,12 @@
       <main id="content">
         <!-- HOME -->
         <section data-page="home">
-          <h1>snarv</h1>
+          <h1>vil</h1>
           <p class="lede">geeked geeked geeked geeked</p>
 
           <div class="actions">
-            <a class="btn" href="#notes" data-route="notes">read my notes</a>
-            <a class="btn-line" href="#contact" data-route="contact">get in touch</a>
+            <a class="btn" href="#notes" data-route="notes">notes</a>
+            <a class="btn-line" href="#contact" data-route="contact">contact</a>
           </div>
 
           <div class="label">right now</div>
@@ -501,17 +501,17 @@
         <!-- CONTACT -->
         <section data-page="contact">
           <h1>contact</h1>
-          <p class="lede">email is the best way to reach me. i'll get back when i can.</p>
+          <p class="lede">reply on discord quick, email not so quick</p>
 
           <div class="label">find me</div>
           <dl class="rows">
             <div class="row">
               <dt>email</dt>
-              <dd><a href="mailto:you@example.com" id="email">you@example.com</a><button type="button" class="copy" id="copy">copy</button></dd>
+              <dd><a href="mailto:haigelthomo@gmail.com" id="email">haigelthomo@gmail.com</a><button type="button" class="copy" id="copy">copy</button></dd>
             </div>
-            <div class="row"><dt>github</dt><dd><a class="ext" href="https://github.com/" target="_blank" rel="noopener">github.com/your-username</a></dd></div>
-            <div class="row"><dt>elsewhere</dt><dd><a class="ext" href="https://example.com/" target="_blank" rel="noopener">your other link</a></dd></div>
-            <div class="row"><dt>replies</dt><dd>usually within a day or two</dd></div>
+            <div class="row"><dt>github</dt><dd><a class="ext" href="https://github.com/" target="_blank" rel="noopener">https://github.com/ssatrn</a></dd></div>
+            <div class="row"><dt>server</dt><dd><a class="ext" href="https://discord.gg/GMdWR7NrFW/" target="_blank" rel="noopener">discord server</a></dd></div>
+            <div class="row"><dt>discord</dt><dd>username vo.w / id 847191036672344074</dd></div>
           </dl>
 
           <div class="label">or write here</div>
@@ -531,7 +531,7 @@
   </div>
 
   <div class="status">
-    <span id="where">/home/snarv</span>
+    <span id="where">/home/vil</span>
     <span id="clock"></span>
   </div>
 
@@ -595,7 +595,7 @@
           else a.removeAttribute("aria-current");
         });
 
-        var path = "/home/snarv";
+        var path = "/home/vil";
         if (page !== "home") path += "/" + page;
         if (note) path += "/" + note.dataset.note;
         whereEl.textContent = path;
@@ -603,7 +603,7 @@
         var heading = note
           ? note.querySelector("h1")
           : document.querySelector('section[data-page="' + page + '"] h1');
-        document.title = "snarv / " + (note ? heading.textContent : page);
+        document.title = "vil / " + (note ? heading.textContent : page);
 
         window.scrollTo(0, 0);
         if (moveFocus && heading) {
