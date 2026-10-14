@@ -58,5 +58,5 @@ vilets.eu/
   &nbsp; · &nbsp;
   <a href="https://github.com/ssatrn">ssatrn</a>
   <br />
-  <sub><code>60°10′N 24°56′E</code> · somewhere on the internet</sub>
+  <sub><code>60°10′N 25°56′E</code> · somewhere on the internet</sub>
 </p>
