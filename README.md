@@ -51,8 +51,6 @@ vilets.eu/
 └── README.md
 ```
 
-Push changes to `main` to publish updates through GitHub Pages.
-
 ---
 
 <p align="center">
