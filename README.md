@@ -6,7 +6,6 @@
 
 <p align="center">
   <a href="https://vilets.eu"><img src="https://img.shields.io/badge/website-vilets.eu-8be9fd?style=flat-square&labelColor=101d30" /></a>
-  <img src="https://img.shields.io/badge/HTML-CSS-JAVASCRIPT-172b4d?style=flat-square&color=8be9fd" />
   <img src="https://img.shields.io/badge/hosted%20on-GitHub%20Pages-172b4d?style=flat-square&color=8be9fd" />
 </p>
 
@@ -40,7 +39,7 @@ git clone https://github.com/ssatrn/vilets.eu.git
 cd vilets.eu
 ```
 
-Open `index.html` in your browser. That's it.
+Open `index.html` in your browser.
 
 ### `04` — structure
 
